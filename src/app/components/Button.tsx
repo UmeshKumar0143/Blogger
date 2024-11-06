@@ -7,7 +7,11 @@ interface propdata {
 export  default function Button({text}:propdata){
     const router = useRouter(); 
    const HandleClick = () =>{
-        text=="Register"? router.push('/api/auth/signup') : router.push('/api/auth/signin')
+    if(text=="Register"){
+        router.push('/api/auth/signup') 
+    }else if(text=="Log In"){
+        router.push('/api/auth/signin')
     }
-    return <button onClick={HandleClick} className="text-gray-300 hover:text-white  bg-black rounded-full px-7 py-3 font-bold sm:text-xl  ">{text}</button>
+    }
+    return <button onClick={HandleClick} className="text-gray-300 hover:text-white  bg-black rounded-full px-7 py-3 font-semibold sm:text-xl   ">{text}</button>
 }
