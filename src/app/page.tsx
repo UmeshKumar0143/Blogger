@@ -1,5 +1,8 @@
+import LandingPage from "./components/LandingPage";
 
-export default function Home() {
-   return <div>Hello </div> 
+export default function App() {
+   return <div>
+      <LandingPage/>
+       </div> 
 
 }
