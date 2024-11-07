@@ -13,12 +13,14 @@ export async function POST(req:NextRequest) {
             const RealPass = await bcrypt.compare(password,FoundUser.password); 
             if(RealPass){
                 return NextResponse.json({
-                    message: "logged In"
+                    message: "logged In",
+                    status: 200
                 })
             }
         } 
         return NextResponse.json({
-            message: "User not found"
+            message: "User not found",
+            status :400
         })
     } catch (e:any) {
         return NextResponse.json({
