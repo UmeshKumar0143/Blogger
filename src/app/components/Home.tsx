@@ -1,38 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { PlusCircle, LogIn, UserPlus } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+
+
 
 export default function BlogHome() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [username, setUsername] = useState('John Doe')
-  const [blogs, setBlogs] = useState([
-    { 
-      id: 1, 
-      title: 'First Blog Post', 
-      description: 'This is a short description of the first blog post. It provides a brief overview of what the reader can expect from the full article.',
-      imageUrl: '/placeholder.svg?height=300&width=400'
-    },
-    { 
-      id: 2, 
-      title: 'Second Blog Post', 
-      description: 'This is a short description of the second blog post. It gives a sneak peek into the content and entices the reader to click and read more.',
-      imageUrl: '/placeholder.svg?height=300&width=400'
-    },
-    { 
-      id: 3, 
-      title: 'Third Blog Post', 
-      description: 'This is a short description of the third blog post. It highlights key points from the article to grab the reader\'s attention.',
-      imageUrl: '/placeholder.svg?height=300&width=400'
-    },
-  ])
 
-  const router = useRouter(); 
-  const handleLogin = () => setIsLoggedIn(true)
-  const handleLogout = () => setIsLoggedIn(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [username, setUsername] = useState('')
+  const [blogs, setBlogs] = useState([]);
+  const router = useRouter();
+  
+  useEffect(()=>{
+    const getBlog = async () =>{
+      const response = await axios.get('http://localhost:3000/api/blogs/allblogs');
+      setBlogs(response.data.blogs); 
+    }
+    const getUser = async () =>{
+      const response = await axios.get('http://localhost:3000/api/user'); 
+      setUsername(response.data.realUser.name); 
+    }
+    getBlog();
+    getUser(); 
+  },[])
+  
+
+
+  const handleLogout = async() =>{
+     const response = await axios.get("http://localhost:3000/api/users/logout"); 
+     console.log(response); 
+     if(response.status === 200){
+      setIsLoggedIn(false); 
+     }
+  }
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -65,11 +71,11 @@ export default function BlogHome() {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="mr-2" onClick={handleLogin}>
+                  <Button variant="outline" className="mr-2" onClick={()=> router.push('/auth/signin')}>
                     <LogIn className="mr-2 h-4 w-4" />
                     Login
                   </Button>
-                  <Button variant="outline">
+                  <Button onClick={()=>router.push('/auth/signup')} variant="outline">
                     <UserPlus className="mr-2 h-4 w-4" />
                     Register
                   </Button>

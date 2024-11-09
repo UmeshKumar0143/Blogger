@@ -18,6 +18,7 @@ export async function POST(req:NextRequest) {
                 const response =  NextResponse.json({
                     message: "Logged IN  ",
                     status: 200, 
+                    FoundUser
                 }) 
                 response.cookies.set({
                     name:"token",

@@ -5,7 +5,7 @@ export async function POST(req:NextRequest){
     try {
         const jwttoken = req.cookies.get('token')
     if(!jwttoken){
-        return NextResponse.json("No Token found"); 
+        return NextResponse.json({message: "No Token found"},{status: 400}); 
     }
     const token = jwttoken.value;
     const verifiedUser = jwt.verify(token,process.env.JWT_SECRET as string) as {id:number}; 

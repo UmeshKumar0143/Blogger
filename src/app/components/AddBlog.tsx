@@ -4,10 +4,14 @@ import { useState, ChangeEvent } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { PlusCircle, LogIn, UserPlus, Image as ImageIcon } from 'lucide-react'
+import { LogIn, UserPlus, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export default function AddBlog() {
+
+  
+
+
   const [isLoggedIn, setIsLoggedIn] = useState(true)
   const [username, setUsername] = useState('John Doe')
   const [blogTitle, setBlogTitle] = useState('')
@@ -39,9 +43,12 @@ export default function AddBlog() {
       <nav className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="flex-shrink-0 gap-6 flex items-center">
               <Link href={'/home'} className="text-xl font-bold">Blog Website</Link>
+              <Link href={'/home'} className="text-lg font-bold">Home</Link>
+              
             </div>
+           
             <div className="flex items-center">
               {isLoggedIn ? (
                 <>
