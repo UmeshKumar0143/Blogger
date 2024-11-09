@@ -25,6 +25,7 @@ model blog{
   id          Int @id @default(autoincrement())
   title       String
   desc        String
+  img         String
   createdAt   DateTime @default(now())
   user        User @relation(fields: [userId], references: [id] )
   userId      Int

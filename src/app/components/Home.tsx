@@ -89,11 +89,11 @@ export default function BlogHome() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold mb-6">Latest Blog Posts</h2>
         <div className="space-y-6">
-          {blogs.map((blog) => (
-            <div key={blog.id} className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden">
+          {blogs.map((blog,index) => (
+            <div key={index} className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden">
               <div className="sm:w-1/3 relative h-48 sm:h-auto">
                 <Image
-                  src={blog.imageUrl}
+                  src={blog.img}
                   alt={`Cover image for ${blog.title}`}
                   width={400}
                   height={300}

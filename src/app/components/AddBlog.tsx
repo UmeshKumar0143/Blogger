@@ -1,11 +1,13 @@
 'use client'
 
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { LogIn, UserPlus, Image as ImageIcon } from 'lucide-react'
 import Link from 'next/link'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
 
 export default function AddBlog() {
 
@@ -16,26 +18,41 @@ export default function AddBlog() {
   const [username, setUsername] = useState('John Doe')
   const [blogTitle, setBlogTitle] = useState('')
   const [blogDescription, setBlogDescription] = useState('')
-  const [blogImage, setBlogImage] = useState<File | null>(null)
+  const [blogImage, setBlogImage] = useState('')
+  const router = useRouter(); 
+ 
 
-  const handleLogin = () => setIsLoggedIn(true)
-  const handleLogout = () => setIsLoggedIn(false)
-
-  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setBlogImage(e.target.files[0])
+  const handleLogout = async() =>{
+    const response = await axios.get("http://localhost:3000/api/users/logout"); 
+    console.log(response); 
+    if(response.status === 200){
+     setIsLoggedIn(false); 
     }
-  }
+ }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(()=>{
+    const getUser = async () =>{
+      const response = await axios.get('http://localhost:3000/api/user'); 
+      setUsername(response.data.realUser.name); 
+      setIsLoggedIn(true); 
+    }
+    getUser(); 
+  },[])
+
+ 
+
+  const handleSubmit =  async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the blog data to your backend
     console.log('Blog submitted:', { blogTitle, blogDescription, blogImage })
-    // Reset form fields
+    const response = await  axios.post('http://localhost:3000/api/blogs/addBlog',{
+      blogTitle,
+      blogDescription,
+      blogImage
+    })
+    console.log(response); 
     setBlogTitle('')
     setBlogDescription('')
-    setBlogImage(null)
-    alert('Blog post submitted successfully!')
+    setBlogImage('')
   }
 
   return (
@@ -62,7 +79,7 @@ export default function AddBlog() {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="mr-2" onClick={handleLogin}>
+                  <Button variant="outline" className="mr-2" onClick={()=>router.push('/auth/signin')}>
                     <LogIn className="mr-2 h-4 w-4" />
                     Login
                   </Button>
@@ -109,28 +126,20 @@ export default function AddBlog() {
             </div>
             <div>
               <label htmlFor="blogImage" className="block text-sm font-medium text-gray-700">
-                Blog Image
+              Enter Image URL 
               </label>
-              <div className="mt-1 flex items-center">
+              <div className="mt-2 flex items-center">
+                <ImageIcon className="mr-2 h-8 w-6" />
                 <Input
                   id="blogImage"
-                  type="file"
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="hidden"
+                  type="url"
+                  value={blogImage}
+                  onChange={(e)=>setBlogImage(e.target.value)}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => document.getElementById('blogImage')?.click()}
-                >
-                  <ImageIcon className="mr-2 h-4 w-4" />
-                  Choose Image
-                </Button>
                 {blogImage && <span className="ml-3">{blogImage.name}</span>}
               </div>
             </div>
-            <Button type="submit">Submit Blog Post</Button>
+            <Button  type="submit">Submit Blog Post</Button>
           </form>
         ) : (
           <p className="text-center text-gray-600">Please log in to add a new blog post.</p>

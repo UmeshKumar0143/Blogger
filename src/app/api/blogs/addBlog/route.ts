@@ -16,11 +16,12 @@ export async function POST(req:NextRequest){
             }
         })
         if(realUser){
-           const {title,desc} = await req.json(); 
+           const {blogTitle,blogDescription,blogImage} = await req.json(); 
            const Blog = await  PrismaClient.blog.create({
             data:{
-                title: title,
-                desc: desc,
+                title: blogTitle,
+                desc: blogDescription,
+                img: blogImage, 
                 userId: realUser.id
             }
            }) 
@@ -38,8 +39,7 @@ export async function POST(req:NextRequest){
     }else{
         return NextResponse.json({message: "Not verified user"}); 
     }
-    } catch (e:any) {
-        console.log(e); 
+    } catch (e) {
         return NextResponse.json({
             message: "Error Occured",
             status: 400, 
