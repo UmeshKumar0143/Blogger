@@ -18,26 +18,23 @@ export default function Sign({ text }: { text: propsdata }) {
   const router = useRouter();
 
   const validateFields = () => {
-    if(email=="" && password==""){
-      setError("Please Fill your Information")
-      return false; 
-    }
-    else if (!email.trim()) {
+  
+     if (!email.trim()) {
       setError("Please enter your email");
       return false;
     }
 
-   else  if (!password.trim()) {
+     if (!password.trim()) {
       setError("Please enter your password");
       return false;
     }
 
-    else  if (!text && !name.trim()) {
+      if (!text && !name.trim()) {
       setError("Please enter your name");
       return false;
     }
 
-    else  if (!email.includes('@') || !email.includes('.')) {
+      if (!email.includes('@') || !email.includes('.')) {
       setError("Please enter a valid email");
       return false;
     }
