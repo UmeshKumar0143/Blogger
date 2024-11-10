@@ -25,7 +25,6 @@ export default function AddBlog() {
 
   const handleLogout = async() =>{
     const response = await axios.get("http://localhost:3000/api/users/logout"); 
-    console.log(response); 
     if(response.status === 200){
      setIsLoggedIn(false); 
     }

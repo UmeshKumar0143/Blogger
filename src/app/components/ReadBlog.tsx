@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -8,90 +8,93 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { LogIn, UserPlus } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
+import axios from "axios"
+
 
 export default function BlogPostPage() {
+  interface Blog {
+    id:number,
+    title: string,
+    desc: string,
+    img: string, 
+    createdAt: Date,
+    user: {id: number, name:string, email: string}
+  }
+
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState({ name: "", email: "" })
+  const [username, setUsername] = useState()
   const router = useRouter();
-  const post = {
-    title: "Understanding the Basics of React Hooks",
-    coverImage: "/placeholder.svg",
-    content: `
-      React Hooks are a powerful feature introduced in React 16.8. They allow you to use state and other React features
-      without writing a class. This means you can use React without classes.
+  const [blog,setBlog] = useState<Blog|null>(null); 
+  const params = useParams(); 
+  
+  const id = params?.id; 
+  
 
-      The most commonly used hooks are:
 
-      1. useState: Allows you to add state to your functional components.
-      2. useEffect: Lets you perform side effects in function components.
-      3. useContext: Subscribes to React Context without introducing nesting.
-
-      Hooks solve many problems that developers faced with the class-based approach, such as the complexity of
-      sharing stateful logic between components, the confusion around the 'this' keyword, and the need to
-      understand different lifecycle methods.
-
-      By using Hooks, you can extract stateful logic from a component so it can be tested independently and
-      reused. This makes your code easier to understand and maintain.
-    `,
-    author: {
-      name: "Jane Doe",
-      avatar: "/placeholder.svg",
-    },
-    createdAt: "May 15, 2023",
-    comments: [
-      { id: 1, author: "John Smith", content: "Great article! Very informative.", createdAt: "May 16, 2023" },
-      { id: 2, author: "Alice Johnson", content: "Thanks for explaining this so clearly!", createdAt: "May 17, 2023" },
-    ],
+  const handleLogout = async() =>{
+    const response = await axios.get("http://localhost:3000/api/users/logout"); 
+    if(response.status === 200){
+     setIsLoggedIn(false); 
+    }
+ }
+ useEffect(()=>{
+  try {
+    if(id){
+      const getBlog = async () =>{
+        const response = await axios.get(`http://localhost:3000/api/blogs/readblog/${id}`);
+        setBlog(response.data.Blog)
+      }
+      getBlog();
+    }
+    const getUser = async () =>{
+      const response = await axios.get('http://localhost:3000/api/user'); 
+      setUsername(response.data.realUser.name); 
+      setIsLoggedIn(true); 
+    }
+    getUser(); 
+  } catch (error) {
+    console.log(error); 
   }
+  
+},[])
 
-  const handleLogout = () => {
-    setIsLoggedIn(false)
-    setUser({ name: "", email: "" })
-  }
-
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-    setUser({ name: "John Doe", email: "john@example.com" })
-  }
-
+ 
   return (
     <div className="min-h-screen flex flex-col">
-      <nav className="bg-white text-gray-800 shadow-md">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <Link href="/home" className="text-xl font-bold">
-              Blogify
-            </Link>
-            <Button variant="ghost" asChild>
-              <Link href="/home">Home</Link>
-            </Button>
-          </div>
-          <div className="flex items-center space-x-4">
-            {isLoggedIn ? (
-              <>
-                <div className="flex items-center space-x-2">
-                  <Avatar>
-                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                  </Avatar>
-                  <span>{user.name}</span>
-                </div>
-                <Button variant="ghost" onClick={handleLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="outline" className="mr-2" onClick={()=> router.push('/auth/signin')}>
+      <nav className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex-shrink-0 gap-6 flex items-center">
+              <Link href={'/home'} className="text-xl font-bold">Blog Website</Link>
+              <Link href={'/home'} className="text-lg font-bold">Home</Link>
+              
+            </div>
+           
+            <div className="flex items-center">
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center mr-2">
+                      {username.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="mr-4">{username}</span>
+                    <Button variant="outline" onClick={handleLogout}>Logout</Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Button variant="outline" className="mr-2" onClick={()=>router.push('/auth/signin')}>
                     <LogIn className="mr-2 h-4 w-4" />
                     Login
                   </Button>
-                  <Button onClick={()=>router.push('/auth/signup')} variant="outline">
+                  <Button variant="outline">
                     <UserPlus className="mr-2 h-4 w-4" />
                     Register
                   </Button>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -102,15 +105,15 @@ export default function BlogPostPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <Image
-                  src={post.coverImage}
-                  alt={post.title}
+                  src={blog?.img}
+                  alt={blog?.title}
                   width={1200}
                   height={600}
                   className="rounded-lg object-cover w-full h-[300px] mb-8"
                 />
-                <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+                <h1 className="text-3xl font-bold mb-4">{blog?.title}</h1>
                 <div className="prose max-w-none">
-                  {post.content.split('\n').map((paragraph, index) => (
+                  {blog?.desc.split('\n').map((paragraph, index) => (
                     <p key={index} className="mb-4">
                       {paragraph}
                     </p>
@@ -124,24 +127,25 @@ export default function BlogPostPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center space-x-4">
-                      <Avatar>
-                        <AvatarImage src={post.author.avatar} alt={post.author.name} />
-                        <AvatarFallback>{post.author.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-semibold">{post.author.name}</p>
-                        <p className="text-sm text-muted-foreground">Posted on {post.createdAt}</p>
-                      </div>
+                    <div className="flex items-center">
+                    <div className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center mr-2">
+                      {blog?.user.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                    <span className="mr-4">{blog?.user.name}</span>
+                        <p className="text-sm text-muted-foreground">Posted on {blog?.createdAt}</p>
+                        </div>
+                  </div>
                     </div>
                   </CardContent>
                 </Card>
-                <Card>
+                {/* <Card>
                   <CardHeader>
                     <CardTitle>Comments</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {post.comments.map((comment) => (
+                      {blog.comments.map((comment) => (
                         <div key={comment.id} className="border-b pb-4 last:border-b-0">
                           <p className="font-semibold">{comment.author}</p>
                           <p className="text-sm text-muted-foreground mb-2">{comment.createdAt}</p>
@@ -154,13 +158,13 @@ export default function BlogPostPage() {
                       <Button>Post Comment</Button>
                     </div>
                   </CardContent>
-                </Card>
+                </Card> */}
               </div>
             </div>
           ) : (
             <div className="text-center py-16">
               <h2 className="text-2xl font-bold mb-4">Log in first to see the blog</h2>
-              <Button onClick={handleLogin}>Log In</Button>
+              <Button onClick={()=>router.push('/auth/signin')}>Log In</Button>
             </div>
           )}
         </div>
