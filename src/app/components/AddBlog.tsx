@@ -15,10 +15,11 @@ export default function AddBlog() {
 
 
   const [isLoggedIn, setIsLoggedIn] = useState(true)
-  const [username, setUsername] = useState('John Doe')
+  const [username, setUsername] = useState('')
   const [blogTitle, setBlogTitle] = useState('')
   const [blogDescription, setBlogDescription] = useState('')
   const [blogImage, setBlogImage] = useState('')
+  const [loader, setLoader] = useState(false) ; 
   const router = useRouter(); 
  
 
@@ -42,6 +43,7 @@ export default function AddBlog() {
  
 
   const handleSubmit =  async (e: React.FormEvent) => {
+    setLoader(true); 
     e.preventDefault()
     console.log('Blog submitted:', { blogTitle, blogDescription, blogImage })
     const response = await  axios.post('http://localhost:3000/api/blogs/addBlog',{
@@ -49,7 +51,7 @@ export default function AddBlog() {
       blogDescription,
       blogImage
     })
-    console.log(response); 
+    setLoader(false)
     setBlogTitle('')
     setBlogDescription('')
     setBlogImage('')
@@ -139,7 +141,7 @@ export default function AddBlog() {
                 {blogImage && <span className="ml-3">{blogImage.name}</span>}
               </div>
             </div>
-            <Button  type="submit">Submit Blog Post</Button>
+            <Button disabled= {loader}  type="submit">{loader? "Submiting...." : "Submit Blog Post"}</Button>
           </form>
         ) : (
           <p className="text-center text-gray-600">Please log in to add a new blog post.</p>

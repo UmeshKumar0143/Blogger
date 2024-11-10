@@ -7,11 +7,16 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 
-
+interface Blog {
+  id: number,
+  title: string , 
+  desc: string | null , 
+  img:  string | null 
+}
 
 export default function BlogHome() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState('')
   const [blogs, setBlogs] = useState([]);
   const router = useRouter();
@@ -24,6 +29,7 @@ export default function BlogHome() {
     const getUser = async () =>{
       const response = await axios.get('http://localhost:3000/api/user'); 
       setUsername(response.data.realUser.name); 
+      setIsLoggedIn(true); 
     }
     getBlog();
     getUser(); 
@@ -89,24 +95,25 @@ export default function BlogHome() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold mb-6">Latest Blog Posts</h2>
         <div className="space-y-6">
-          {blogs.map((blog,index) => (
+          {blogs.map((blog:Blog,index) => (
             <div key={index} className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden">
-              <div className="sm:w-1/3 relative h-48 sm:h-auto">
+              <div className="sm:w-1/3 relative h-48 sm:h-56">
                 <Image
                   src={blog.img}
                   alt={`Cover image for ${blog.title}`}
-                  width={400}
-                  height={300}
+                  width={200}
+                  height={200}
                   layout="responsive"
                   objectFit="cover"
+                  objectPosition='center'
                 />
               </div>
               <div className="sm:w-2/3 p-4 sm:p-6 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">{blog.title}</h3>
-                  <p className="text-gray-600 mb-4">{blog.description}</p>
+                  <h3 className="text-xl font-[poppins] font-semibold mb-2">{blog.title}</h3>
+                  <p className="text-gray-600 font-[poppins] mb-4">{blog.desc}</p>
                 </div>
-                <Button variant="outline" className="self-start">
+                <Button onClick={()=>router.push(`/readblog/${blog.id}`)} variant="outline" className="self-start">
                   Read More
                 </Button>
               </div>
