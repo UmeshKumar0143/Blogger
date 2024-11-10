@@ -36,7 +36,6 @@ export default function BlogPostPage() {
   };
   const   handleDelete = async () =>{
     const response = await axios.delete(`http://localhost:3000/api/blogs/deleteblog/${id}`);
-    console.log(response); 
     router.push('/home'); 
   }
   useEffect(() => {
@@ -58,10 +57,9 @@ export default function BlogPostPage() {
       };
       getUser();
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   }, []);
-console.log(username)
   return (
     <div className="min-h-screen flex flex-col">
       <nav className="bg-white shadow">

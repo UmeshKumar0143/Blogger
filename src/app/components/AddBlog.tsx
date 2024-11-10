@@ -44,7 +44,6 @@ export default function AddBlog() {
   const handleSubmit =  async (e: React.FormEvent) => {
     setLoader(true); 
     e.preventDefault()
-    console.log('Blog submitted:', { blogTitle, blogDescription, blogImage })
     const response = await  axios.post('http://localhost:3000/api/blogs/addBlog',{
       blogTitle,
       blogDescription,

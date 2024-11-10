@@ -12,5 +12,6 @@ export async function DELETE(req:NextRequest,{params}:{params:{id: string}}){
         return NextResponse.json({message: "Delteed", Deltedblog})
     } catch (error) {
         console.log(error); 
+        return NextResponse.json({message: "Error occured"})
     }
 }
