@@ -1,51 +1,49 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { PlusCircle, LogIn, UserPlus } from 'lucide-react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { PlusCircle, LogIn, UserPlus } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface Blog {
-  id: number,
-  title: string , 
-  desc: string | null , 
-  img:  string | null ,
-  createdAt: Date
+  id: number;
+  title: string;
+  desc: string | null;
+  img: string | null;
+  createdAt: Date;
 }
 
 export default function BlogHome() {
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [username, setUsername] = useState('')
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
   const [blogs, setBlogs] = useState([]);
   const router = useRouter();
-  
-  useEffect(()=>{
-    const getBlog = async () =>{
-      const response = await axios.get('http://localhost:3000/api/blogs/allblogs');
-      setBlogs(response.data.blogs); 
-    }
-    const getUser = async () =>{
-      const response = await axios.get('http://localhost:3000/api/user'); 
-      setUsername(response.data.realUser.name); 
-      setIsLoggedIn(true); 
-    }
+
+  useEffect(() => {
+    const getBlog = async () => {
+      const response = await axios.get(
+        "http://localhost:3000/api/blogs/allblogs"
+      );
+      setBlogs(response.data.blogs);
+    };
+    const getUser = async () => {
+      const response = await axios.get("http://localhost:3000/api/user");
+      setUsername(response.data.realUser.name);
+      setIsLoggedIn(true);
+    };
     getBlog();
-    getUser(); 
-  },[])
-  
+    getUser();
+  }, []);
 
-
-  const handleLogout = async() =>{
-     const response = await axios.get("http://localhost:3000/api/users/logout"); 
-     console.log(response); 
-     if(response.status === 200){
-      setIsLoggedIn(false); 
-     }
-  }
-
+  const handleLogout = async () => {
+    const response = await axios.get("http://localhost:3000/api/users/logout");
+    console.log(response);
+    if (response.status === 200) {
+      setIsLoggedIn(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -58,11 +56,11 @@ export default function BlogHome() {
             <div className="flex items-center">
               {isLoggedIn ? (
                 <>
-                  <Button 
+                  <Button
                     variant="outline"
                     className="mr-4"
                     onClick={() => {
-                      router.push('/addblog');
+                      router.push("/addblog");
                     }}
                   >
                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -73,16 +71,25 @@ export default function BlogHome() {
                       {username.charAt(0).toUpperCase()}
                     </div>
                     <span className="mr-4">{username}</span>
-                    <Button variant="outline" onClick={handleLogout}>Logout</Button>
+                    <Button variant="outline" onClick={handleLogout}>
+                      Logout
+                    </Button>
                   </div>
                 </>
               ) : (
                 <>
-                  <Button variant="outline" className="mr-2" onClick={()=> router.push('/auth/signin')}>
+                  <Button
+                    variant="outline"
+                    className="mr-2"
+                    onClick={() => router.push("/auth/signin")}
+                  >
                     <LogIn className="mr-2 h-4 w-4" />
                     Login
                   </Button>
-                  <Button onClick={()=>router.push('/auth/signup')} variant="outline">
+                  <Button
+                    onClick={() => router.push("/auth/signup")}
+                    variant="outline"
+                  >
                     <UserPlus className="mr-2 h-4 w-4" />
                     Register
                   </Button>
@@ -96,35 +103,60 @@ export default function BlogHome() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold mb-6">Latest Blog Posts</h2>
         <div className="space-y-6">
-          {blogs.sort((a,b)=> new Date(b.createdAt).getTime()- new Date(a.createdAt).getTime()).map((blog:Blog,index) => (
-            <div key={index} className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden">
-              <div className="sm:w-1/3 relative h-48 sm:h-56">
-                <Image
-                  src={blog.img}
-                  alt={`Cover image for ${blog.title}`}
-                  width={200}
-                  height={200}
-                  layout="responsive"
-                  objectFit="cover"
-                  objectPosition='center'
-                />
-              </div>
-              <div className="sm:w-2/3 p-4 sm:p-6 flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xl font-[poppins] font-semibold mb-2">{blog.title}</h3>
-                  <p className="text-gray-600 font-[poppins] mb-4">{blog.desc}</p>
+          {blogs
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime()
+            )
+            .map((blog: Blog, index) => (
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden"
+              >
+                <div className="sm:w-1/3 relative h-48 sm:h-56">
+                  <Image
+                    src={blog.img}
+                    alt={`Cover image for ${blog.title}`}
+                    width={200}
+                    height={200}
+                    layout="responsive"
+                    objectFit="cover"
+                    objectPosition="center"
+                  />
                 </div>
-                <div className='flex  items-center gap-6'>
-                <Button onClick={()=>router.push(`/readblog/${blog.id}`)} variant="outline" className="self-start">
-                  Read More
-                </Button>
-                <p className='text-sm'><span className='font-semibold'>Created at: </span>{blog?.createdAt.toString().split('T')[0]}</p>
+                <div className="sm:w-2/3 p-4 sm:p-6 flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-[poppins] font-semibold mb-2">
+                      {blog.title}
+                    </h3>
+                    <p className="text-gray-600 font-[poppins] mb-4">
+                      {blog.desc}
+                    </p>
+                  </div>
+                  <div className="flex  items-center gap-6">
+                    <Button
+                      onClick={() => router.push(`/readblog/${blog.id}`)}
+                      variant="outline"
+                      className="self-start"
+                    >
+                      Read More
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                      Posted on {blog?.createdAt.toString().split("T")[0]} at{" "}
+                      {new Date(blog?.createdAt).toLocaleTimeString("en-US", {
+                        timeZone: "Asia/Kolkata",
+                        hour12: true,
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </main>
     </div>
-  )
+  );
 }
