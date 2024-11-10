@@ -52,9 +52,10 @@ export default function Sign({ text }: { text: propsdata }) {
         email,
         password,
       });
+      if(Response.data.status == 400) setError("User Already Exists.  Use a  Diffrent Email.");
       if (Response.data.status == 200) router.push('/home');
     } catch (e: any) {
-      setError("Registration failed. Please try again.");
+      setError("Registration Failed, Try Again");
     } finally {
       setLoader(false);
     }
@@ -69,6 +70,7 @@ export default function Sign({ text }: { text: propsdata }) {
         email,
         password,
       });
+      setError("Login failed. Incorrect Email or Password.");
       if (Response.data.status == 200) router.push('/home');
     } catch (e: any) {
       setError("Invalid email or password");
@@ -90,11 +92,11 @@ export default function Sign({ text }: { text: propsdata }) {
       <div className="w-full mt-4 flex flex-col justify-center items-center">
         {error && (
           <div className=" flex items-center justify-between rounded-xl py-2 mb-5 px-3 border-2 bg-red-400  border-red-900">
-            <span className="text-white font-semibold text-xl tracking-wide flex items-center gap-2">
+            <span className="text-red-700 font-semibold text-xl tracking-wide flex items-center gap-2">
               {error}
             </span>
             <button
-              className="text-white font-semibold px-2"
+              className="text-red-800 font-semibold px-2"
               onClick={handleClose}
             >
               ✕
