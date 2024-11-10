@@ -139,26 +139,6 @@ export default function BlogPostPage() {
                     </div>
                   </CardContent>
                 </Card>
-                {/* <Card>
-                  <CardHeader>
-                    <CardTitle>Comments</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {blog.comments.map((comment) => (
-                        <div key={comment.id} className="border-b pb-4 last:border-b-0">
-                          <p className="font-semibold">{comment.author}</p>
-                          <p className="text-sm text-muted-foreground mb-2">{comment.createdAt}</p>
-                          <p>{comment.content}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-6">
-                      <Textarea placeholder="Add a comment..." className="mb-2" />
-                      <Button>Post Comment</Button>
-                    </div>
-                  </CardContent>
-                </Card> */}
               </div>
             </div>
           ) : (

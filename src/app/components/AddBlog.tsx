@@ -54,6 +54,7 @@ export default function AddBlog() {
     setBlogTitle('')
     setBlogDescription('')
     setBlogImage('')
+    router.push('/home')
   }
 
   return (

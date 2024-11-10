@@ -11,7 +11,8 @@ interface Blog {
   id: number,
   title: string , 
   desc: string | null , 
-  img:  string | null 
+  img:  string | null ,
+  createdAt: Date
 }
 
 export default function BlogHome() {
@@ -95,7 +96,7 @@ export default function BlogHome() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <h2 className="text-2xl font-bold mb-6">Latest Blog Posts</h2>
         <div className="space-y-6">
-          {blogs.map((blog:Blog,index) => (
+          {blogs.sort((a,b)=> new Date(b.createdAt).getTime()- new Date(a.createdAt).getTime()).map((blog:Blog,index) => (
             <div key={index} className="flex flex-col sm:flex-row border border-gray-200 rounded-lg overflow-hidden">
               <div className="sm:w-1/3 relative h-48 sm:h-56">
                 <Image
@@ -113,9 +114,12 @@ export default function BlogHome() {
                   <h3 className="text-xl font-[poppins] font-semibold mb-2">{blog.title}</h3>
                   <p className="text-gray-600 font-[poppins] mb-4">{blog.desc}</p>
                 </div>
+                <div className='flex  items-center gap-6'>
                 <Button onClick={()=>router.push(`/readblog/${blog.id}`)} variant="outline" className="self-start">
                   Read More
                 </Button>
+                <p className='text-sm'><span className='font-semibold'>Created at: </span>{blog?.createdAt.toString().split('T')[0]}</p>
+                </div>
               </div>
             </div>
           ))}
