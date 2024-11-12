@@ -8,11 +8,11 @@ export default function LandingPage(){
             <p className="sm:text-lg  text-sm   text-center font-[poppins]">Unleash your voice, share your stories, and inspire the world <br/> <span className="font-bold ">Your blog, Your platform, Your voice</span> </p>
         </div>
         <div className="flex flex-col items-center  gap-6 max-w-xl justify-center mx-auto  mt-10">
-            <div className="flex hover:text-white hover:text-xl justify-center items-center sm:text-lg gap-3 bg-black text-zinc-200 px-5 py-3 rounded-full">
-                <Link href={"/home"} className="" >Explore</Link>
+            <Link href={'/home'} className="flex hover:text-white hover:text-xl justify-center items-center sm:text-lg gap-3 bg-black text-zinc-200 px-5 py-3 rounded-full">
+                <Link href={"/home"} className="font-semibold" >Explore</Link>
                 <Link href={"/home"} className="" ><FaArrowRightLong/></Link>
                 
-            </div>
+            </Link>
             <div className="flex gap-6 justify-center  flex-col sm:flex-row">
             <Button text={"Register"}/>
             <Button text={"Log In"}/>
