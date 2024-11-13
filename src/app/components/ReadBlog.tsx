@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,7 +20,7 @@ export default function BlogPostPage() {
   }
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState("Jhon Doe");
   const [userId, setUserId] = useState<number>(); 
   const router = useRouter();
   const [blog, setBlog] = useState<Blog | null>(null);
@@ -121,7 +120,7 @@ export default function BlogPostPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <Image
-                  src={blog?.img || ""}
+                  src={blog?.img || "/default.jpg"}
                   alt={blog?.title || "image"}
                   width={1200}
                   height={600}
