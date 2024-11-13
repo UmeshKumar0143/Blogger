@@ -47,7 +47,7 @@ export default function BlogPostPage() {
           setBlog(response.data.Blog);
         }
       } catch (error) {
-        console.error('Error fetching blog:', error);
+        console.log('Error fetching blog:', error);
       }
     };
   
@@ -58,7 +58,7 @@ export default function BlogPostPage() {
         setUserId(response.data.realUser.id);
         setIsLoggedIn(true);
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.log('Error fetching user:', error);
       }
     };
   
@@ -152,11 +152,11 @@ export default function BlogPostPage() {
                         </div>
                         <div>
                           <span className="mr-4">{blog?.user.name}</span>
-                          <p className="text-sm text-muted-foreground">
+                          {blog?.createdAt && <p className="text-sm text-muted-foreground">
                             Posted on {blog?.createdAt.toString().split("T")[0]}{" "}
                             at{" "}
                             {format(new Date(blog?.createdAt), "hh:mm a")}
-                          </p>
+                          </p>}
                         </div>
                       </div>
                     </div>

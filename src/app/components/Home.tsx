@@ -28,7 +28,7 @@ export default function BlogHome() {
         const response = await axios.get("http://localhost:3000/api/blogs/allblogs");
         setBlogs(response.data.blogs);
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.log('Error fetching blogs:', error);
       }
     };
   

@@ -37,7 +37,7 @@ export default function AddBlog() {
       setUsername(response.data.realUser.name);
       setIsLoggedIn(true);
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.log('Error fetching user:', error);
     }
   };
 
