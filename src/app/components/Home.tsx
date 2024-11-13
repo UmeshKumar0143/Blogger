@@ -6,7 +6,7 @@ import { PlusCircle, LogIn, UserPlus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-
+import {format} from 'date-fns'
 interface Blog {
   id: number;
   title: string;
@@ -24,19 +24,28 @@ export default function BlogHome() {
 
   useEffect(() => {
     const getBlog = async () => {
-      const response = await axios.get(
-        "http://localhost:3000/api/blogs/allblogs"
-      );
-      setBlogs(response.data.blogs);
+      try {
+        const response = await axios.get("http://localhost:3000/api/blogs/allblogs");
+        setBlogs(response.data.blogs);
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
     };
+  
     const getUser = async () => {
-      const response = await axios.get("http://localhost:3000/api/user");
-      setUsername(response.data.realUser.name);
-      setIsLoggedIn(true);
+      try {
+        const response = await axios.get("http://localhost:3000/api/user");
+        setUsername(response.data.realUser.name);
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.log('Error fetching user:', error);
+      }
     };
+  
     getBlog();
     getUser();
   }, []);
+  
 
   const handleLogout = async () => {
     const response = await axios.get("http://localhost:3000/api/users/logout");
@@ -116,7 +125,7 @@ console.log(blogs)
               >
                 <div className="sm:w-1/3 relative h-48 sm:h-56">
                   <Image
-                    src={blog.img}
+                    src={blog.img || ""}
                     alt={`Cover image for ${blog.title}`}
                     width={200}
                     height={200}
@@ -144,12 +153,9 @@ console.log(blogs)
                     </Button>
                     <p className="text-sm text-muted-foreground">
                       Posted on {blog?.createdAt.toString().split("T")[0]} at{" "}
-                      {new Date(blog?.createdAt).toLocaleTimeString("en-US", {
-                        timeZone: "Asia/Kolkata",
-                        hour12: true,
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                
+                    {format(new Date(blog?.createdAt), "hh:mm a")}
+
                     </p>
                     <p className="font-[poppins] font-bold text-sm">Author : {blog?.user.name}</p>
                   </div>

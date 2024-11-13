@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LogIn, UserPlus,Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
+import { format } from "date-fns";
 
 export default function BlogPostPage() {
   interface Blog {
@@ -39,27 +40,33 @@ export default function BlogPostPage() {
     router.push('/home'); 
   }
   useEffect(() => {
-    try {
-      if (id) {
-        const getBlog = async () => {
-          const response = await axios.get(
-            `http://localhost:3000/api/blogs/readblog/${id}`
-          );
+    const getBlog = async () => {
+      try {
+        if (id) {
+          const response = await axios.get(`http://localhost:3000/api/blogs/readblog/${id}`);
           setBlog(response.data.Blog);
-        };
-        getBlog();
+        }
+      } catch (error) {
+        console.error('Error fetching blog:', error);
       }
-      const getUser = async () => {
+    };
+  
+    const getUser = async () => {
+      try {
         const response = await axios.get("http://localhost:3000/api/user");
         setUsername(response.data.realUser.name);
-        setUserId(response.data.realUser.id); 
+        setUserId(response.data.realUser.id);
         setIsLoggedIn(true);
-      };
-      getUser();
-    } catch (error) {
-      console.log(error); 
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+  
+    if (id) {
+      getBlog();
     }
-  }, []);
+    getUser();
+  }, [id]);  
   return (
     <div className="min-h-screen flex flex-col">
       <nav className="bg-white shadow">
@@ -114,8 +121,8 @@ export default function BlogPostPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2">
                 <Image
-                  src={blog?.img}
-                  alt={blog?.title}
+                  src={blog?.img || ""}
+                  alt={blog?.title || "image"}
                   width={1200}
                   height={600}
                   className="rounded-lg object-cover w-full h-[300px] mb-8"
@@ -148,15 +155,7 @@ export default function BlogPostPage() {
                           <p className="text-sm text-muted-foreground">
                             Posted on {blog?.createdAt.toString().split("T")[0]}{" "}
                             at{" "}
-                            {new Date(blog?.createdAt).toLocaleTimeString(
-                              "en-US",
-                              {
-                                timeZone: "Asia/Kolkata",
-                                hour12: true,
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              }
-                            )}
+                            {format(new Date(blog?.createdAt), "hh:mm a")}
                           </p>
                         </div>
                       </div>

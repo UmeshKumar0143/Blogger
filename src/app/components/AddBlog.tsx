@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, ChangeEvent, useEffect } from 'react'
+import { useState,  useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -30,14 +30,22 @@ export default function AddBlog() {
     }
  }
 
-  useEffect(()=>{
-    const getUser = async () =>{
-      const response = await axios.get('http://localhost:3000/api/user'); 
-      setUsername(response.data.realUser.name); 
-      setIsLoggedIn(true); 
+ useEffect(() => {
+  const getUser = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/user');
+      setUsername(response.data.realUser.name);
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error('Error fetching user:', error);
     }
-    getUser(); 
-  },[])
+  };
+
+  if (typeof window !== 'undefined') {
+    getUser();
+  }
+}, []);
+
 
  
 
