@@ -13,6 +13,7 @@ interface Blog {
   desc: string | null;
   img: string | null;
   createdAt: Date;
+  user: {id:number, name: string, email:string}
 }
 
 export default function BlogHome() {
@@ -43,7 +44,7 @@ export default function BlogHome() {
       setIsLoggedIn(false);
     }
   };
-
+console.log(blogs)
   return (
     <div className="min-h-screen bg-white">
       <nav className="bg-white shadow">
@@ -150,6 +151,7 @@ export default function BlogHome() {
                         minute: "2-digit",
                       })}
                     </p>
+                    <p className="font-[poppins] font-bold text-sm">Author : {blog?.user.name}</p>
                   </div>
                 </div>
               </div>
